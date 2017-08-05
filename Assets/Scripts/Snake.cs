@@ -22,41 +22,52 @@ public class Snake : MonoBehaviour {
 	public Transform tail;
 	public List<Transform> body = new List<Transform>();
 
-	private Vector2 directionVector;
-	private Vector2 distanceVector;
+	private Vector2 _directionVector;
+	private Vector2 _distanceVector;
 
-	private float timeCounter = 0;
+	private float _timeCounter = 0;
 
 	void Awake() {
 		if (length < 1)
 			length = 1;
 
-		foreach (Transform child in transform) {
-			if (child.gameObject.activeSelf && child.CompareTag("SnakeHead")) {
-				head = child;
-				tail = child;
-				body.Add(head);
+		if (head == null || !head.CompareTag("SnakeHead")) {
+			head = null;
+
+			foreach (Transform child in transform) {
+				if (child.gameObject.activeSelf && child.CompareTag("SnakeHead")) {
+					head = child;
+					break;
+				}
 			}
 		}
 
 		if (head == null)
 			Debug.LogError("Snake has no head");
+		else
+			body.Add(head);
 
-		UpdateDirectionAndDistanceVectors();
+		UpdateDirection();
 		InitializeBody();
+
+		// set tail reference to last body part in array
+		tail = body[length - 1];
 	}
 		
 	void Update() {
-		timeCounter += Time.deltaTime;
+		_timeCounter += Time.deltaTime;
 		float movementPeriod = 1 / movementFrequency;
-		if (timeCounter >= movementPeriod) {
+		if (_timeCounter >= movementPeriod) {
 			UpdateMovement();
-			int multiplesOfPeriod = (int) (timeCounter / movementPeriod);
-			timeCounter -= multiplesOfPeriod * movementPeriod;
+			int multiplesOfPeriod = (int) (_timeCounter / movementPeriod);
+			_timeCounter -= multiplesOfPeriod * movementPeriod;
 		}
 	}
 
 	private void InitializeBody() {
+		// Create and place snake body squares in positions relative to head position.
+		// By default, place body squares one to the left of head.
+		// Squares are separated from each other by the movementDistance unit.
 
 		Vector2 headPosition = head.transform.position;
 		Vector2 destination = headPosition + new Vector2(-movementDistance, 0);
@@ -69,26 +80,22 @@ public class Snake : MonoBehaviour {
 			Vector2 bodyPartPosition = snakeBody.transform.position;
 			destination = bodyPartPosition + new Vector2(-movementDistance, 0);
 		}
-
-		tail = body[length - 1];
 	}
 
 	void UpdateMovement() {
-		Debug.Log("Running movement update");
 		UpdateDirection();
-		UpdateDirectionAndDistanceVectors();
 		Move();
 	}
 
 	private void Move() {
+		// Don't move anything if the snake is not moving in a direction.
+		if (direction == Direction.Neutral)
+			return;
 		MoveBody();
 		MoveHead();
 	}
 
 	private void MoveBody() {
-		if (direction == Direction.Neutral)
-			return;
-		
 		Vector2 destination = head.transform.position;
 
 		foreach (Transform bodyPart in body) {
@@ -99,13 +106,18 @@ public class Snake : MonoBehaviour {
 	}
 
 	private void MoveHead() {
-		head.transform.Translate(distanceVector);
+		Debug.Log(_distanceVector);
+		head.transform.Translate(_distanceVector);
 	}
 
 	private bool UpdateDirection() {
+		// Set the next movement direction by getting the next button input
+		// from the input queue.
+		// Return whether or not the direction was updated.
+
 		bool directionChanged = false;
 
-		if (InputManager.instance.HasButtons()) {
+		if (InputManager.initialized && InputManager.instance.HasButtons()) {
 			string button = InputManager.instance.GetNextButton();
 
 			if (button == "Down" && (length == 1 || direction != Direction.Up)) {
@@ -124,33 +136,33 @@ public class Snake : MonoBehaviour {
 			directionChanged = true;
 		}
 
-		if (directionChanged)
+		if (directionChanged) {
 			Debug.Log("direction changed to " + direction);
+			UpdateDirectionVector();
+			UpdateDistanceVector();
+		}
 
 		return directionChanged;
 	}
 
-	private Vector2 GetDirectionVector() {
-		Vector2 directionVector;
-
+	private Vector2 UpdateDirectionVector() {
 		if (direction == Direction.Up)
-			directionVector = new Vector2(0, 1);
+			_directionVector = new Vector2(0, 1);
 		else if (direction == Direction.Down)
-			directionVector = new Vector2(0, -1);
+			_directionVector = new Vector2(0, -1);
 		else if (direction == Direction.Left)
-			directionVector = new Vector2(-1, 0);
+			_directionVector = new Vector2(-1, 0);
 		else if (direction == Direction.Right)
-			directionVector = new Vector2(1, 0);
+			_directionVector = new Vector2(1, 0);
 		else { // if direction == Direction.Neutral
-			directionVector = new Vector2(0, 0);
+			_directionVector = new Vector2(0, 0);
 		}
 
-		return directionVector;
+		return _directionVector;
 	}
 
-	void UpdateDirectionAndDistanceVectors() {
-		directionVector = GetDirectionVector();
-		distanceVector = directionVector * movementDistance;
+	void UpdateDistanceVector() {
+		_distanceVector = _directionVector * movementDistance;
 	}
 
 }

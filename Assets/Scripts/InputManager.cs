@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour {
 		}
 	}
 
+	public static bool initialized = false;
+
 	private string[] buttons = {"Up", "Down", "Left", "Right"};
 	private Queue<string> buttonQueue;
 
@@ -25,6 +27,7 @@ public class InputManager : MonoBehaviour {
 		}
 
 		buttonQueue = new Queue<string>();
+		initialized = true;
 	}
 
 	void Update() {
