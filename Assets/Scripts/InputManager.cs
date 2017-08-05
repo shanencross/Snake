@@ -36,13 +36,13 @@ public class InputManager : MonoBehaviour {
 		}
 	}
 
-	public string getNextButton() {
+	public string GetNextButton() {
 		string button = buttonQueue.Dequeue();
 		Debug.Log("Dequeuing " + button);
 		return button;
 	}
 
-	public bool hasButtons() {
+	public bool HasButtons() {
 		if (buttonQueue.Count > 0) {
 			return true;
 		} 

@@ -14,81 +14,99 @@ public class Snake : MonoBehaviour {
 
 	public Direction direction = Direction.Neutral;
 
-	[SerializeField]
-	private int length = 0; // length of the snake in number of squares
+	public int length = 1; // length of the snake in number of squares
 
-	[SerializeField]
-	private Vector2 distanceVector;
+	public GameObject snakeBodyPrefab;
 
 	public Transform head;
 	public Transform tail;
 	public List<Transform> body = new List<Transform>();
 
-	[SerializeField]
 	private Vector2 directionVector;
+	private Vector2 distanceVector;
 
 	private float timeCounter = 0;
 
 	void Awake() {
-		updateDirectionAndDistanceVectors();
+		if (length < 1)
+			length = 1;
 
 		foreach (Transform child in transform) {
-
-			if (child.gameObject.activeSelf) {
-				if (child.CompareTag("SnakeHead")) {
-					head = child;
-					length++;
-				} 
-				else if (child.CompareTag("SnakeTail")) {
-					tail = child;
-					length++;
-				} 
-				else if (child.CompareTag("SnakeBody")) {
-					body.Add(child);
-					length++;
-				}
+			if (child.gameObject.activeSelf && child.CompareTag("SnakeHead")) {
+				head = child;
+				tail = child;
+				body.Add(head);
 			}
 		}
 
 		if (head == null)
 			Debug.LogError("Snake has no head");
 
-		if (tail == null)
-			Debug.Log("Snake has no tail");
-
-		if (body.Count == 0)
-			Debug.Log("Snake has no body parts.");
+		UpdateDirectionAndDistanceVectors();
+		InitializeBody();
 	}
-
+		
 	void Update() {
 		timeCounter += Time.deltaTime;
 		float movementPeriod = 1 / movementFrequency;
 		if (timeCounter >= movementPeriod) {
-			RunSnakeLoop();
-			int multiplesOfTimeFrequency = (int) (timeCounter / movementPeriod);
-			timeCounter -= multiplesOfTimeFrequency * movementPeriod;
+			UpdateMovement();
+			int multiplesOfPeriod = (int) (timeCounter / movementPeriod);
+			timeCounter -= multiplesOfPeriod * movementPeriod;
 		}
 	}
 
-	void RunSnakeLoop() {
-		Debug.Log("Running snake loop");
-		updateDirection();
+	private void InitializeBody() {
 
-		updateDirectionAndDistanceVectors();
+		Vector2 headPosition = head.transform.position;
+		Vector2 destination = headPosition + new Vector2(-movementDistance, 0);
 
+		for (int i = 0; i < length - 1; i++) {
+			GameObject snakeBody = (GameObject)Instantiate(snakeBodyPrefab, destination, Quaternion.identity);
+			snakeBody.transform.SetParent(transform);
+			body.Add(snakeBody.transform);
+
+			Vector2 bodyPartPosition = snakeBody.transform.position;
+			destination = bodyPartPosition + new Vector2(-movementDistance, 0);
+		}
+
+		tail = body[length - 1];
+	}
+
+	void UpdateMovement() {
+		Debug.Log("Running movement update");
+		UpdateDirection();
+		UpdateDirectionAndDistanceVectors();
 		Move();
 	}
 
-	void updateDirectionAndDistanceVectors() {
-		directionVector = getDirectionVector();
-		distanceVector = directionVector * movementDistance;
+	private void Move() {
+		MoveBody();
+		MoveHead();
 	}
 
-	private bool updateDirection() {
+	private void MoveBody() {
+		if (direction == Direction.Neutral)
+			return;
+		
+		Vector2 destination = head.transform.position;
+
+		foreach (Transform bodyPart in body) {
+			Vector2 oldPosition = bodyPart.position;
+			bodyPart.position = destination;
+			destination = oldPosition;
+		}
+	}
+
+	private void MoveHead() {
+		head.transform.Translate(distanceVector);
+	}
+
+	private bool UpdateDirection() {
 		bool directionChanged = false;
 
-		if (InputManager.instance.hasButtons()) {
-			string button = InputManager.instance.getNextButton();
+		if (InputManager.instance.HasButtons()) {
+			string button = InputManager.instance.GetNextButton();
 
 			if (button == "Down" && (length == 1 || direction != Direction.Up)) {
 				direction = Direction.Down;
@@ -111,12 +129,8 @@ public class Snake : MonoBehaviour {
 
 		return directionChanged;
 	}
-		
-	private void Move() {
-		transform.Translate(distanceVector);
-	}
 
-	private Vector2 getDirectionVector() {
+	private Vector2 GetDirectionVector() {
 		Vector2 directionVector;
 
 		if (direction == Direction.Up)
@@ -133,4 +147,10 @@ public class Snake : MonoBehaviour {
 
 		return directionVector;
 	}
+
+	void UpdateDirectionAndDistanceVectors() {
+		directionVector = GetDirectionVector();
+		distanceVector = directionVector * movementDistance;
+	}
+
 }

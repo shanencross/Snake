@@ -80,8 +80,8 @@ public class Snake_alt3 : MonoBehaviour {
 	private bool checkInput() {
 		bool directionChanged = false;
 
-		if (InputManager.instance.hasButtons()) {
-			string button = InputManager.instance.getNextButton();
+		if (InputManager.instance.HasButtons()) {
+			string button = InputManager.instance.GetNextButton();
 
 			if (button == "Down" && (length == 1 || direction != Direction.Up)) {
 				direction = Direction.Down;
