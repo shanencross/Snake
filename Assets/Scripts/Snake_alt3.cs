@@ -2,33 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Snake : MonoBehaviour {
+public class Snake_alt3 : MonoBehaviour {
 
 	[Range(0, 100)]
-	public float movementFrequency = 15; // movements per second
-
-	[Range(0, 100)]
-	public float movementDistance = 1; // units traversed per movement
+	public float speed  = 1;
 
 	public enum Direction {Up, Down, Left, Right, Neutral};
 
 	public Direction direction = Direction.Neutral;
 
 	[SerializeField]
-	private int length = 0; // length of the snake in number of squares
+	private int length = 0;
 
 	[SerializeField]
-	private Vector2 distanceVector;
+	private Vector2 speedVector;
 
 	public Transform head;
 	public Transform tail;
 	public List<Transform> body = new List<Transform>();
 
 	[SerializeField]
+	private Vector2 unsnappedPosition;
+
+	[SerializeField]
 	private Vector2 directionVector;
 
 	void Awake() {
-		updateDirectionAndDistanceVectors();
+		updateDirectionAndSpeedVectors();
+
+		transform.position = SnapToGrid(transform.position);
+		unsnappedPosition = transform.position;
 
 		foreach (Transform child in transform) {
 
@@ -36,12 +39,10 @@ public class Snake : MonoBehaviour {
 				if (child.CompareTag("SnakeHead")) {
 					head = child;
 					length++;
-				} 
-				else if (child.CompareTag("SnakeTail")) {
+				} else if (child.CompareTag("SnakeTail")) {
 					tail = child;
 					length++;
-				} 
-				else if (child.CompareTag("SnakeBody")) {
+				} else if (child.CompareTag("SnakeBody")) {
 					body.Add(child);
 					length++;
 				}
@@ -58,26 +59,25 @@ public class Snake : MonoBehaviour {
 			Debug.Log("Snake has no body parts.");
 	}
 
-	void Start() {
-		float movementPeriod = 1 / movementFrequency;
-		InvokeRepeating("RunSnakeLoop", 0, movementPeriod);
-	}
+	void Update() {
+		checkInput();
 
-	void RunSnakeLoop() {
-		Debug.Log("Running snake loop");
-		updateDirection();
+		updateDirectionAndSpeedVectors();
 
-		updateDirectionAndDistanceVectors();
+		if (transform.hasChanged)
+			unsnappedPosition = SnapToGrid(transform.position);
 
 		Move();
+
+		transform.hasChanged = false;
 	}
 
-	void updateDirectionAndDistanceVectors() {
+	void updateDirectionAndSpeedVectors() {
 		directionVector = getDirectionVector();
-		distanceVector = directionVector * movementDistance;
+		speedVector = directionVector * speed;
 	}
 
-	private bool updateDirection() {
+	private bool checkInput() {
 		bool directionChanged = false;
 
 		if (InputManager.instance.hasButtons()) {
@@ -97,7 +97,7 @@ public class Snake : MonoBehaviour {
 			}
 
 			directionChanged = true;
-		}
+		} 
 
 		if (directionChanged)
 			Debug.Log("direction changed to " + direction);
@@ -106,7 +106,9 @@ public class Snake : MonoBehaviour {
 	}
 		
 	private void Move() {
-		transform.Translate(distanceVector);
+		Vector2 distanceVector = speedVector * Time.deltaTime;
+		unsnappedPosition += distanceVector;
+		transform.position = SnapToGrid(unsnappedPosition);
 	}
 
 	private Vector2 getDirectionVector() {
@@ -125,5 +127,15 @@ public class Snake : MonoBehaviour {
 		}
 
 		return directionVector;
+	}
+
+	private Vector2 SnapToGrid(Vector2 position) {
+		Vector2 snappedPosition = new Vector2(SnapToGrid(position.x), SnapToGrid(position.y));
+		return snappedPosition;
+	}
+
+	private float SnapToGrid(float num) {
+		float snappedNum = Mathf.Sign(num) * (Mathf.Abs((int)(num)) + 0.5f);
+		return snappedNum;
 	}
 }

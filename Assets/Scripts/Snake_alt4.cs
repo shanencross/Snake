@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Snake : MonoBehaviour {
+public class Snake_alt4 : MonoBehaviour {
 
 	[Range(0, 100)]
 	public float movementFrequency = 15; // movements per second
