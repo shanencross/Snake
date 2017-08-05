@@ -27,6 +27,8 @@ public class Snake : MonoBehaviour {
 	[SerializeField]
 	private Vector2 directionVector;
 
+	private float timeCounter = 0;
+
 	void Awake() {
 		updateDirectionAndDistanceVectors();
 
@@ -58,9 +60,14 @@ public class Snake : MonoBehaviour {
 			Debug.Log("Snake has no body parts.");
 	}
 
-	void Start() {
+	void Update() {
+		timeCounter += Time.deltaTime;
 		float movementPeriod = 1 / movementFrequency;
-		InvokeRepeating("RunSnakeLoop", 0, movementPeriod);
+		if (timeCounter >= movementPeriod) {
+			RunSnakeLoop();
+			int multiplesOfTimeFrequency = (int) (timeCounter / movementPeriod);
+			timeCounter -= multiplesOfTimeFrequency * movementPeriod;
+		}
 	}
 
 	void RunSnakeLoop() {
