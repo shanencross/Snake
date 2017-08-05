@@ -47,7 +47,7 @@ public class Snake : MonoBehaviour {
 		else
 			body.Add(head);
 
-		UpdateDirection();
+		UpdateDirectionAndDistanceVectors();
 		InitializeBody();
 
 		// set tail reference to last body part in array
@@ -138,11 +138,15 @@ public class Snake : MonoBehaviour {
 
 		if (directionChanged) {
 			Debug.Log("direction changed to " + direction);
-			UpdateDirectionVector();
-			UpdateDistanceVector();
+			UpdateDirectionAndDistanceVectors();
 		}
 
 		return directionChanged;
+	}
+
+	private void UpdateDirectionAndDistanceVectors() {
+		UpdateDirectionVector();
+		UpdateDistanceVector();
 	}
 
 	private Vector2 UpdateDirectionVector() {
