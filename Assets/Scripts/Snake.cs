@@ -19,6 +19,7 @@ public class Snake : MonoBehaviour {
 	public GameObject snakeBodyPrefab;
 
 	public Transform head;
+	public Transform headImpactDetector;
 	public Transform tail;
 	public List<Transform> body = new List<Transform>();
 
@@ -31,22 +32,7 @@ public class Snake : MonoBehaviour {
 		if (length < 1)
 			length = 1;
 
-		if (head == null || !head.CompareTag("SnakeHead")) {
-			head = null;
-
-			foreach (Transform child in transform) {
-				if (child.gameObject.activeSelf && child.CompareTag("SnakeHead")) {
-					head = child;
-					break;
-				}
-			}
-		}
-
-		if (head == null)
-			Debug.LogError("Snake has no head");
-		else
-			body.Add(head);
-
+		InitializeHead();
 		UpdateDirectionAndDistanceVectors();
 		InitializeBody();
 
@@ -62,6 +48,40 @@ public class Snake : MonoBehaviour {
 			int multiplesOfPeriod = (int) (_timeCounter / movementPeriod);
 			_timeCounter -= multiplesOfPeriod * movementPeriod;
 		}
+	}
+
+	private void InitializeHead() {
+		if (head == null || !head.CompareTag("SnakeHead")) {
+			head = null;
+
+			foreach (Transform child in transform) {
+				if (child.gameObject.activeSelf && child.CompareTag("SnakeHead")) {
+					head = child;
+					break;
+				}
+			}
+		}
+
+		if (head == null)
+			Debug.LogError("Snake has no head");
+		else {
+			body.Add(head);
+			InitializeHeadImpactDetector();
+		}
+	}
+
+	private void InitializeHeadImpactDetector() {
+		if (headImpactDetector == null || headImpactDetector.parent != head) {
+			foreach (Transform child in head) {
+				if (child.CompareTag("ImpactDetector")) {
+					headImpactDetector = child;
+					break;
+				}
+			}
+		}
+
+		if (headImpactDetector == null)
+			Debug.LogError("No ImpactDetector child object attached to SnakeHead.");
 	}
 
 	private void InitializeBody() {
@@ -91,6 +111,7 @@ public class Snake : MonoBehaviour {
 		// Don't move anything if the snake is not moving in a direction.
 		if (direction == Direction.Neutral)
 			return;
+
 		MoveBody();
 		MoveHead();
 	}
@@ -106,8 +127,15 @@ public class Snake : MonoBehaviour {
 	}
 
 	private void MoveHead() {
-		Debug.Log(_distanceVector);
 		head.transform.Translate(_distanceVector);
+		MoveHeadImpactDetector();
+	}
+
+	private void MoveHeadImpactDetector() {
+		if (headImpactDetector != null) {
+			Vector2 headPosition = head.position;
+			headImpactDetector.position = headPosition + _distanceVector;
+		}
 	}
 
 	private bool UpdateDirection() {
