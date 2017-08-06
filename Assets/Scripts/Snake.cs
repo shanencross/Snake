@@ -133,13 +133,7 @@ public class Snake : MonoBehaviour {
 
 		bool impact = Physics2D.BoxCast(headPosition, movementDistance * Vector2.one, 0f, directionVector, movementDistance, collisionLayer);
 
-
-		Debug.Log(impact);
-
-		if (impact)
-			return true;
-		else
-			return false;
+		return impact;
 	}
 
 	private bool UpdateDirection() {
