@@ -17,6 +17,7 @@ public class Snake : MonoBehaviour {
 	public int length = 1; // length of the snake in number of squares
 
 	public GameObject snakeBodyPrefab;
+	public LayerMask collisionLayer;
 
 	public Transform head;
 	public Transform tail;
@@ -32,6 +33,12 @@ public class Snake : MonoBehaviour {
 	void Awake() {
 		if (length < 1)
 			length = 1;
+
+		if (snakeBodyPrefab == null)
+			Debug.LogError("Snake Body Prefab not assigned.");
+
+		if (collisionLayer == null)
+			Debug.LogError("Collision Layer not assigned.");
 
 		InitializeHead();
 		UpdateDirectionAndDistanceVectors();
@@ -98,6 +105,10 @@ public class Snake : MonoBehaviour {
 		if (direction == Direction.Neutral)
 			return;
 
+		bool impactCheck = CheckForImpact();
+		if (impactCheck)
+			return;
+
 		MoveBody();
 		MoveHead();
 	}
@@ -114,6 +125,20 @@ public class Snake : MonoBehaviour {
 
 	private void MoveHead() {
 		head.transform.Translate(distanceVector);
+	}
+
+	private bool CheckForImpact() {
+		Vector2 headPosition = head.transform.position;
+		Vector2 headDestination = headPosition + distanceVector;
+
+		bool impact = Physics2D.Linecast(headPosition, headDestination + 0.5f * distanceVector, collisionLayer);
+
+		Debug.Log(impact);
+
+		if (impact)
+			return true;
+		else
+			return false;
 	}
 
 	private bool UpdateDirection() {
