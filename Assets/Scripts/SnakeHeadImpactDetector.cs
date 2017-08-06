@@ -15,11 +15,17 @@ public class SnakeHeadImpactDetector : MonoBehaviour {
 
 		if (_snake == null) {
 			Debug.LogError("SnakeHeadImpact detector does not have a SnakeHead parent with a Snake parent with a Snake script attached.");
-		}
+		} 
 
 		if (_collider == null) {
 			Debug.LogError("No BoxCollider2D component attached to SnakeHead.");
 		}
+	}
+
+
+	void Update() {
+		Vector2 headPosition = transform.parent.position;
+		transform.position = headPosition + _snake.distanceVector;
 	}
 
 	void OnTriggerEnter2D(Collider2D otherCollider) {

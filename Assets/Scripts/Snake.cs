@@ -19,12 +19,13 @@ public class Snake : MonoBehaviour {
 	public GameObject snakeBodyPrefab;
 
 	public Transform head;
-	public Transform headImpactDetector;
 	public Transform tail;
 	public List<Transform> body = new List<Transform>();
 
-	private Vector2 _directionVector;
-	private Vector2 _distanceVector;
+	[HideInInspector]
+	public Vector2 directionVector;
+	[HideInInspector]
+	public Vector2 distanceVector;
 
 	private float _timeCounter = 0;
 
@@ -66,22 +67,7 @@ public class Snake : MonoBehaviour {
 			Debug.LogError("Snake has no head");
 		else {
 			body.Add(head);
-			InitializeHeadImpactDetector();
 		}
-	}
-
-	private void InitializeHeadImpactDetector() {
-		if (headImpactDetector == null || headImpactDetector.parent != head) {
-			foreach (Transform child in head) {
-				if (child.CompareTag("ImpactDetector")) {
-					headImpactDetector = child;
-					break;
-				}
-			}
-		}
-
-		if (headImpactDetector == null)
-			Debug.LogError("No ImpactDetector child object attached to SnakeHead.");
 	}
 
 	private void InitializeBody() {
@@ -127,15 +113,7 @@ public class Snake : MonoBehaviour {
 	}
 
 	private void MoveHead() {
-		head.transform.Translate(_distanceVector);
-		MoveHeadImpactDetector();
-	}
-
-	private void MoveHeadImpactDetector() {
-		if (headImpactDetector != null) {
-			Vector2 headPosition = head.position;
-			headImpactDetector.position = headPosition + _distanceVector;
-		}
+		head.transform.Translate(distanceVector);
 	}
 
 	private bool UpdateDirection() {
@@ -179,22 +157,22 @@ public class Snake : MonoBehaviour {
 
 	private Vector2 UpdateDirectionVector() {
 		if (direction == Direction.Up)
-			_directionVector = new Vector2(0, 1);
+			directionVector = new Vector2(0, 1);
 		else if (direction == Direction.Down)
-			_directionVector = new Vector2(0, -1);
+			directionVector = new Vector2(0, -1);
 		else if (direction == Direction.Left)
-			_directionVector = new Vector2(-1, 0);
+			directionVector = new Vector2(-1, 0);
 		else if (direction == Direction.Right)
-			_directionVector = new Vector2(1, 0);
+			directionVector = new Vector2(1, 0);
 		else { // if direction == Direction.Neutral
-			_directionVector = new Vector2(0, 0);
+			directionVector = new Vector2(0, 0);
 		}
 
-		return _directionVector;
+		return directionVector;
 	}
 
 	void UpdateDistanceVector() {
-		_distanceVector = _directionVector * movementDistance;
+		distanceVector = directionVector * movementDistance;
 	}
 
 }
