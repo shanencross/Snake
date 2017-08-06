@@ -131,7 +131,8 @@ public class Snake : MonoBehaviour {
 		Vector2 headPosition = head.transform.position;
 		Vector2 headDestination = headPosition + distanceVector;
 
-		bool impact = Physics2D.Linecast(headPosition, headDestination + 0.5f * distanceVector, collisionLayer);
+		bool impact = Physics2D.BoxCast(headPosition, movementDistance * Vector2.one, 0f, directionVector, movementDistance, collisionLayer);
+
 
 		Debug.Log(impact);
 
