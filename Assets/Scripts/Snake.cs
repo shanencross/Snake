@@ -100,15 +100,11 @@ public class Snake : MonoBehaviour {
 		Move();
 	}
 
-	private void Move() {
+	private void Move() {			
 		// Don't move anything if the snake is not moving in a direction.
 		if (direction == Direction.Neutral)
 			return;
-
-		bool impactCheck = CheckForImpact();
-		if (impactCheck)
-			return;
-
+		
 		MoveBody();
 		MoveHead();
 	}
@@ -125,15 +121,6 @@ public class Snake : MonoBehaviour {
 
 	private void MoveHead() {
 		head.transform.Translate(distanceVector);
-	}
-
-	private bool CheckForImpact() {
-		Vector2 headPosition = head.transform.position;
-		Vector2 headDestination = headPosition + distanceVector;
-
-		bool impact = Physics2D.BoxCast(headPosition, movementDistance * Vector2.one, 0f, directionVector, movementDistance, collisionLayer);
-
-		return impact;
 	}
 
 	private bool UpdateDirection() {
@@ -193,6 +180,19 @@ public class Snake : MonoBehaviour {
 
 	void UpdateDistanceVector() {
 		distanceVector = directionVector * movementDistance;
+	}
+
+	public void ChangeLength(int change = 0) {
+		length += change;
+
+		for (int i = 0; i < change; i++) {
+			GameObject newBodyPart = (GameObject)Instantiate(snakeBodyPrefab, head.transform.position, Quaternion.identity);
+
+			newBodyPart.transform.parent = transform;
+			body.Add(newBodyPart.transform);
+		}
+
+		tail = body[length - 1];
 	}
 
 }
