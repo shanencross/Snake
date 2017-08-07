@@ -28,7 +28,10 @@ public class Snake : MonoBehaviour {
 	[HideInInspector]
 	public Vector2 distanceVector;
 
-	private float _timeCounter = 0;
+	float _timeCounter = 0;
+
+	// extra body parts that need to be added due to snake length increase
+	int _bodyPartsToAdd = 0;
 
 	void Awake() {
 		if (length < 1)
@@ -58,7 +61,7 @@ public class Snake : MonoBehaviour {
 		}
 	}
 
-	private void InitializeHead() {
+	void InitializeHead() {
 		if (head == null || !head.CompareTag("SnakeHead")) {
 			head = null;
 
@@ -77,7 +80,7 @@ public class Snake : MonoBehaviour {
 		}
 	}
 
-	private void InitializeBody() {
+	void InitializeBody() {
 		// Create and place snake body squares in positions relative to head position.
 		// By default, place body squares one to the left of head.
 		// Squares are separated from each other by the movementDistance unit.
@@ -86,11 +89,9 @@ public class Snake : MonoBehaviour {
 		Vector2 destination = headPosition + new Vector2(-movementDistance, 0);
 
 		for (int i = 0; i < length - 1; i++) {
-			GameObject snakeBody = (GameObject)Instantiate(snakeBodyPrefab, destination, Quaternion.identity);
-			snakeBody.transform.SetParent(transform);
-			body.Add(snakeBody.transform);
+			GameObject bodyPart = CreateNewBodyPart(destination);
 
-			Vector2 bodyPartPosition = snakeBody.transform.position;
+			Vector2 bodyPartPosition = bodyPart.transform.position;
 			destination = bodyPartPosition + new Vector2(-movementDistance, 0);
 		}
 	}
@@ -100,7 +101,7 @@ public class Snake : MonoBehaviour {
 		Move();
 	}
 
-	private void Move() {			
+	void Move() {			
 		// Don't move anything if the snake is not moving in a direction.
 		if (direction == Direction.Neutral)
 			return;
@@ -109,21 +110,29 @@ public class Snake : MonoBehaviour {
 		MoveHead();
 	}
 
-	private void MoveBody() {
+	void MoveBody() {
+		// move first body part to what will be the old head position
 		Vector2 destination = head.transform.position;
 
+		// move each body part to the old position of the previous body part
 		foreach (Transform bodyPart in body) {
 			Vector2 oldPosition = bodyPart.position;
 			bodyPart.position = destination;
 			destination = oldPosition;
 		}
+
+		// Add extra body part to old tail position, if necessary due to snake length having increased
+		if (_bodyPartsToAdd > 0) {
+			CreateNewBodyPart(destination);
+			_bodyPartsToAdd--;
+		}
 	}
 
-	private void MoveHead() {
+	void MoveHead() {
 		head.transform.Translate(distanceVector);
 	}
 
-	private bool UpdateDirection() {
+	bool UpdateDirection() {
 		// Set the next movement direction by getting the next button input
 		// from the input queue.
 		// Return whether or not the direction was updated.
@@ -150,19 +159,18 @@ public class Snake : MonoBehaviour {
 		}
 
 		if (directionChanged) {
-			Debug.Log("direction changed to " + direction);
 			UpdateDirectionAndDistanceVectors();
 		}
 
 		return directionChanged;
 	}
 
-	private void UpdateDirectionAndDistanceVectors() {
+	void UpdateDirectionAndDistanceVectors() {
 		UpdateDirectionVector();
 		UpdateDistanceVector();
 	}
 
-	private Vector2 UpdateDirectionVector() {
+	Vector2 UpdateDirectionVector() {
 		if (direction == Direction.Up)
 			directionVector = new Vector2(0, 1);
 		else if (direction == Direction.Down)
@@ -182,17 +190,21 @@ public class Snake : MonoBehaviour {
 		distanceVector = directionVector * movementDistance;
 	}
 
-	public void ChangeLength(int change = 0) {
-		length += change;
+	GameObject CreateNewBodyPart(Vector3 destination) {
+		GameObject bodyPart = (GameObject)Instantiate(snakeBodyPrefab, destination, Quaternion.identity, transform);
+		body.Add(bodyPart.transform);
 
-		for (int i = 0; i < change; i++) {
-			GameObject newBodyPart = (GameObject)Instantiate(snakeBodyPrefab, head.transform.position, Quaternion.identity);
+		// set tail reference to last body part in array
+		tail = body[body.Count - 1];
 
-			newBodyPart.transform.parent = transform;
-			body.Add(newBodyPart.transform);
+		return bodyPart;
+	}
+
+	public void ChangeLength(int change) {
+		if (change > 0) {
+			length += change;
+			_bodyPartsToAdd += change;
 		}
-
-		tail = body[length - 1];
 	}
 
 }

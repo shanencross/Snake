@@ -34,14 +34,14 @@ public class InputManager : MonoBehaviour {
 		foreach (string button in buttons) {
 			if (Input.GetButtonDown(button)) {
 				buttonQueue.Enqueue(button);
-				Debug.Log("Enqueuing " + button);
+//				Debug.Log("Enqueuing " + button);
 			}
 		}
 	}
 
 	public string GetNextButton() {
 		string button = buttonQueue.Dequeue();
-		Debug.Log("Dequeuing " + button);
+//		Debug.Log("Dequeuing " + button);
 		return button;
 	}
 
