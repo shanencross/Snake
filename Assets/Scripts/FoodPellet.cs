@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class FoodPellet : MonoBehaviour {
 
-	public int lengthIncreaseSize = 1;
+	public int lengthIncrease = 1;
+	public float movementFrequencyIncrease = 0;
 
 	private FoodSpawner foodSpawner;
 
 	void Awake() {
+		if (lengthIncrease < 0)
+			lengthIncrease = 0;
+
+		if (movementFrequencyIncrease < 0)
+			movementFrequencyIncrease = 0;
+
 		GameObject foodSpawnerObject = GameObject.FindWithTag("FoodSpawner");
 		transform.parent = foodSpawnerObject.transform;
 		foodSpawner = foodSpawnerObject.GetComponent<FoodSpawner>();
@@ -18,7 +25,9 @@ public class FoodPellet : MonoBehaviour {
 		Debug.Log(otherCollider.gameObject.layer + ", " + gameObject.layer);
 		if (otherCollider.gameObject.layer == gameObject.layer) {
 			Snake snake = otherCollider.GetComponentInParent<Snake>();
-			snake.ChangeLength(lengthIncreaseSize);
+
+			snake.IncreaseLength(lengthIncrease);
+			snake.increaseMovementFrequency(movementFrequencyIncrease);
 
 			DestroyFoodPellet();
 		}

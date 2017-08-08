@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SnakeHeadCollision : MonoBehaviour {
 
-	void OnTriggerStay2D(Collider2D otherCollider) {
+	void OnTriggerEnter2D(Collider2D otherCollider) {
 		if (otherCollider.gameObject.layer == gameObject.layer) {
 			Snake snake = otherCollider.GetComponentInParent<Snake>();
 
@@ -12,6 +12,7 @@ public class SnakeHeadCollision : MonoBehaviour {
 				return;
 
 			snake.direction = Snake.Direction.Neutral;
+			Debug.Log("Collision!");
 		}
 	}
 }

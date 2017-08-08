@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour {
 
-	[Range(0, 100)]
 	public float movementFrequency = 15; // movements per second
 
-	[Range(0, 100)]
 	public float movementDistance = 1; // units traversed per movement
 
 	public enum Direction {Up, Down, Left, Right, Neutral};
@@ -33,6 +31,11 @@ public class Snake : MonoBehaviour {
 	// extra body parts that need to be added due to snake length increase
 	int _bodyPartsToAdd = 0;
 
+	public enum TimeKeepingSystem {TimeCounter, InvokeRepeating}
+
+	[SerializeField]
+	TimeKeepingSystem timeKeepingSystem = TimeKeepingSystem.InvokeRepeating;
+
 	void Awake() {
 		if (length < 1)
 			length = 1;
@@ -49,15 +52,22 @@ public class Snake : MonoBehaviour {
 
 		// set tail reference to last body part in array
 		tail = body[length - 1];
+
+		if (timeKeepingSystem == TimeKeepingSystem.InvokeRepeating) {
+			float movementPeriod = 1 / movementFrequency;
+			InvokeRepeating("UpdateMovement", 0f, movementPeriod);
+		}
 	}
 		
 	void Update() {
-		_timeCounter += Time.deltaTime;
-		float movementPeriod = 1 / movementFrequency;
-		if (_timeCounter >= movementPeriod) {
-			UpdateMovement();
-			int multiplesOfPeriod = (int) (_timeCounter / movementPeriod);
-			_timeCounter -= multiplesOfPeriod * movementPeriod;
+		if (timeKeepingSystem == TimeKeepingSystem.TimeCounter) {
+			_timeCounter += Time.deltaTime;
+			float movementPeriod = 1 / movementFrequency;
+			if (_timeCounter >= movementPeriod) {
+				UpdateMovement();
+				int multiplesOfPeriod = (int)(_timeCounter / movementPeriod);
+				_timeCounter -= multiplesOfPeriod * movementPeriod;
+			}
 		}
 	}
 
@@ -200,11 +210,23 @@ public class Snake : MonoBehaviour {
 		return bodyPart;
 	}
 
-	public void ChangeLength(int change) {
-		if (change > 0) {
-			length += change;
-			_bodyPartsToAdd += change;
+	public void IncreaseLength(int lengthIncrease) {
+		if (lengthIncrease > 0) {
+			length += lengthIncrease;
+			_bodyPartsToAdd += lengthIncrease;
 		}
 	}
 
+	public void increaseMovementFrequency(float movementFrequencyIncrease) {
+		if (movementFrequencyIncrease > 0) {
+			
+			movementFrequency += movementFrequencyIncrease;
+
+			if (timeKeepingSystem == TimeKeepingSystem.InvokeRepeating) {
+				CancelInvoke();
+				float movementPeriod = 1 / movementFrequency;
+				InvokeRepeating("UpdateMovement", 0, movementPeriod);
+			}
+		}
+	}
 }
