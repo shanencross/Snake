@@ -22,15 +22,18 @@ public class FoodPellet : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D otherCollider) {
-		Debug.Log(otherCollider.gameObject.layer + ", " + gameObject.layer);
-		if (otherCollider.gameObject.layer == gameObject.layer) {
-			Snake snake = otherCollider.GetComponentInParent<Snake>();
+//		if (otherCollider.gameObject.layer == LayerMask.NameToLayer("SnakeHead")) {
+//			Snake snake = otherCollider.GetComponentInParent<Snake>();
+//			CollideWithSnakeHead(snake);	
+//		}
+	}
 
-			snake.IncreaseLength(lengthIncrease);
-			snake.increaseMovementFrequency(movementFrequencyIncrease);
+	public void CollideWithSnakeHead(Snake snake) {
 
-			DestroyFoodPellet();
-		}
+		snake.IncreaseLength(lengthIncrease);
+		snake.increaseMovementFrequency(movementFrequencyIncrease);
+
+		DestroyFoodPellet();
 	}
 
 	void DestroyFoodPellet() {

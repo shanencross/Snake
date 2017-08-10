@@ -15,7 +15,6 @@ public class Snake : MonoBehaviour {
 	public int length = 1; // length of the snake in number of squares
 
 	public GameObject snakeBodyPrefab;
-	public LayerMask collisionLayer;
 
 	public Transform head;
 	public Transform tail;
@@ -36,6 +35,8 @@ public class Snake : MonoBehaviour {
 	[SerializeField]
 	TimeKeepingSystem timeKeepingSystem = TimeKeepingSystem.InvokeRepeating;
 
+	CollisionCheck _collisionCheck;
+
 	void Awake() {
 		if (length < 1)
 			length = 1;
@@ -43,8 +44,10 @@ public class Snake : MonoBehaviour {
 		if (snakeBodyPrefab == null)
 			Debug.LogError("Snake Body Prefab not assigned.");
 
-		if (collisionLayer == null)
-			Debug.LogError("Collision Layer not assigned.");
+		_collisionCheck = GetComponent<CollisionCheck>();
+
+		if (_collisionCheck == null)
+			Debug.LogError("CollisionCheck script component is missing.");
 
 		InitializeHead();
 		UpdateDirectionAndDistanceVectors();
@@ -64,9 +67,18 @@ public class Snake : MonoBehaviour {
 			_timeCounter += Time.deltaTime;
 			float movementPeriod = 1 / movementFrequency;
 			if (_timeCounter >= movementPeriod) {
-				UpdateMovement();
 				int multiplesOfPeriod = (int)(_timeCounter / movementPeriod);
-				_timeCounter -= multiplesOfPeriod * movementPeriod;
+//				if (multiplesOfPeriod != 1)
+				Debug.Log("_timeCounter: " + _timeCounter + ", Time.deltaTime: " + Time.deltaTime + ", multiples: " + multiplesOfPeriod);
+		
+				for (int i = 0; i < multiplesOfPeriod; i++) {
+					UpdateMovement();
+					_collisionCheck.CheckCollision(this);
+					_timeCounter -= movementPeriod;
+				}
+//				_timeCounter -= multiplesOfPeriod * movementPeriod;
+
+				Debug.Log("subtracted _timeCounter: " + _timeCounter);
 			}
 		}
 	}
