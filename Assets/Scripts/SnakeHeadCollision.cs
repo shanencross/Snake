@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class SnakeHeadCollision : MonoBehaviour {
 
-	void OnTriggerEnter2D(Collider2D otherCollider) {
-//		if (otherCollider.gameObject.layer == LayerMask.NameToLayer("SnakeHead")) {
-//			Snake snake = otherCollider.GetComponentInParent<Snake>();
-//
-//			StopSnake(snake);
-//		}
+	public void CollideWithSnakeHead(Snake snake) {
+		StopSnake(snake);
 	}
 
 	public void StopSnake(Snake snake) {

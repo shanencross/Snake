@@ -5,25 +5,33 @@ using System.Collections;
 public class FoodSpawner : MonoBehaviour
 {
 	public int pelletCount = 1;
+	public int lengthIncrease = 1;
+	public int movementFrequencyIncrease = 1;
 	public float xMin = -19.5f;
 	public float xMax = 19.5f;
 	public float yMin = -17.5f;
 	public float yMax = 17.5f;
 	public GameObject foodPelletPrefab;
 
+	public List<Transform> foodPellets = new List<Transform>();
+
 	[SerializeField]
-	List<Transform> foodPellets = new List<Transform>();
+	private List<Transform> foodPelletTransformsToAdd = new List<Transform>();
+	[SerializeField]
+	private List<Transform> foodPelletTransformsToRemove = new List<Transform>();
+
+
 
 	void Awake() {
 		if (foodPelletPrefab == null)
 			Debug.LogError("Food Pellet Prefab not assigned.");
 
-		SpawnFood();
+		for (int i = 0; i < pelletCount; i++) {
+			SpawnFood();
+		}
 	}
 
 	public void SpawnFood() {
-		for (int i = 0; i < pelletCount; i++) {
-
 			Vector2 location;
 			bool spaceOccupied;
 			int whileLoopCount = 0;
@@ -45,13 +53,40 @@ public class FoodSpawner : MonoBehaviour
 
 			} while (spaceOccupied); 
 
-			GameObject foodPellet = (GameObject)Instantiate(foodPelletPrefab, location, Quaternion.identity, transform);
-			foodPellets.Add(foodPellet.transform);
+			GameObject foodPelletObject = (GameObject)Instantiate(foodPelletPrefab, location, Quaternion.identity, transform);
 
-
-		}
+			foodPelletTransformsToAdd.Add(foodPelletObject.transform);
 	}
 		
+	public void DestroyFoodPellet(Transform foodPelletTransform) {
+		if (foodPelletTransform != null) {
+			foodPelletTransformsToRemove.Add(foodPelletTransform);
+			SpawnFood();
+		}
+	}
+
+	public void UpdateFoodPellets() {
+
+		foreach (Transform foodPelletTransform in foodPelletTransformsToRemove) {
+			Debug.Log("Removing: " + foodPelletTransform.position);
+			foodPellets.Remove(foodPelletTransform);
+			Destroy(foodPelletTransform.gameObject);
+		}
+		foodPelletTransformsToRemove.Clear();
+
+		foreach (Transform foodPelletTransform in foodPelletTransformsToAdd) {
+			Debug.Log("Adding " + foodPelletTransform.position);
+			foodPellets.Add(foodPelletTransform);
+
+			FoodPellet foodPellet = foodPelletTransform.GetComponent<FoodPellet>();
+
+			if (foodPellet != null)
+				foodPellet.Initialize(gameObject, lengthIncrease, movementFrequencyIncrease);
+		}
+
+		foodPelletTransformsToAdd.Clear();
+	}
+
 	float SnapToGrid(float num) {
 		return Mathf.Sign(num) * (Mathf.Abs((int)(num)) + 0.5f);
 	}

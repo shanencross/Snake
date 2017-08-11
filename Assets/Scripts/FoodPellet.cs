@@ -4,32 +4,37 @@ using UnityEngine;
 
 public class FoodPellet : MonoBehaviour {
 
-	public int lengthIncrease = 1;
-	public float movementFrequencyIncrease = 0;
+	public int lengthIncrease;
+	public float movementFrequencyIncrease;
 
-	private FoodSpawner foodSpawner;
+	public GameObject foodSpawnerObject;
 
-	void Awake() {
+	public FoodSpawner foodSpawner;
+
+//	void Awake() {
+//		Initialize();
+//	}
+
+	public void Initialize(GameObject spawner = null, int lengthInc = 1, float moveFreqInc = 1) {
+		lengthIncrease = lengthInc;
+		movementFrequencyIncrease = moveFreqInc;
+		foodSpawnerObject = spawner;
+
 		if (lengthIncrease < 0)
 			lengthIncrease = 0;
 
 		if (movementFrequencyIncrease < 0)
 			movementFrequencyIncrease = 0;
 
-		GameObject foodSpawnerObject = GameObject.FindWithTag("FoodSpawner");
+		if (foodSpawner == null) {
+			foodSpawnerObject = GameObject.FindWithTag("FoodSpawner");
+		}
+
 		transform.parent = foodSpawnerObject.transform;
 		foodSpawner = foodSpawnerObject.GetComponent<FoodSpawner>();
 	}
-
-	void OnTriggerEnter2D(Collider2D otherCollider) {
-//		if (otherCollider.gameObject.layer == LayerMask.NameToLayer("SnakeHead")) {
-//			Snake snake = otherCollider.GetComponentInParent<Snake>();
-//			CollideWithSnakeHead(snake);	
-//		}
-	}
-
+		
 	public void CollideWithSnakeHead(Snake snake) {
-
 		snake.IncreaseLength(lengthIncrease);
 		snake.increaseMovementFrequency(movementFrequencyIncrease);
 
@@ -37,7 +42,13 @@ public class FoodPellet : MonoBehaviour {
 	}
 
 	void DestroyFoodPellet() {
-		foodSpawner.SpawnFood();
-		Destroy(gameObject);
+
+		if (foodSpawner == null) {
+			Destroy(gameObject);
+		} 
+		else {
+			foodSpawner.DestroyFoodPellet(transform);
+		}
+
 	}
 }

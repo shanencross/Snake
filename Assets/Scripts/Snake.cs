@@ -69,16 +69,16 @@ public class Snake : MonoBehaviour {
 			if (_timeCounter >= movementPeriod) {
 				int multiplesOfPeriod = (int)(_timeCounter / movementPeriod);
 //				if (multiplesOfPeriod != 1)
-				Debug.Log("_timeCounter: " + _timeCounter + ", Time.deltaTime: " + Time.deltaTime + ", multiples: " + multiplesOfPeriod);
+//				Debug.Log("_timeCounter: " + _timeCounter + ", Time.deltaTime: " + Time.deltaTime + ", multiples: " + multiplesOfPeriod);
 		
 				for (int i = 0; i < multiplesOfPeriod; i++) {
 					UpdateMovement();
-					_collisionCheck.CheckCollision(this);
+					_collisionCheck.CheckCollisions(this);
 					_timeCounter -= movementPeriod;
 				}
 //				_timeCounter -= multiplesOfPeriod * movementPeriod;
 
-				Debug.Log("subtracted _timeCounter: " + _timeCounter);
+//				Debug.Log("subtracted _timeCounter: " + _timeCounter);
 			}
 		}
 	}
