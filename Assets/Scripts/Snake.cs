@@ -30,11 +30,6 @@ public class Snake : MonoBehaviour {
 	// extra body parts that need to be added due to snake length increase
 	int _bodyPartsToAdd = 0;
 
-	public enum TimeKeepingSystem {TimeCounter, InvokeRepeating}
-
-	[SerializeField]
-	TimeKeepingSystem timeKeepingSystem = TimeKeepingSystem.InvokeRepeating;
-
 	CollisionCheck _collisionCheck;
 
 	void Awake() {
@@ -55,30 +50,25 @@ public class Snake : MonoBehaviour {
 
 		// set tail reference to last body part in array
 		tail = body[length - 1];
-
-		if (timeKeepingSystem == TimeKeepingSystem.InvokeRepeating) {
-			float movementPeriod = 1 / movementFrequency;
-			InvokeRepeating("UpdateMovement", 0f, movementPeriod);
-		}
 	}
 		
 	void Update() {
-		if (timeKeepingSystem == TimeKeepingSystem.TimeCounter) {
-			_timeCounter += Time.deltaTime;
-			float movementPeriod = 1 / movementFrequency;
-			if (_timeCounter >= movementPeriod) {
-				int multiplesOfPeriod = (int)(_timeCounter / movementPeriod);
-//				if (multiplesOfPeriod != 1)
-//				Debug.Log("_timeCounter: " + _timeCounter + ", Time.deltaTime: " + Time.deltaTime + ", multiples: " + multiplesOfPeriod);
-		
-				for (int i = 0; i < multiplesOfPeriod; i++) {
-					UpdateMovement();
-					_collisionCheck.CheckCollisions(this);
-					_timeCounter -= movementPeriod;
-				}
-//				_timeCounter -= multiplesOfPeriod * movementPeriod;
+		if (GameManager.instance && !GameManager.instance.gameIsOver)
+			RunSnakeMovement();
+	}
 
-//				Debug.Log("subtracted _timeCounter: " + _timeCounter);
+	void RunSnakeMovement() {
+		_timeCounter += Time.deltaTime;
+		float movementPeriod = 1 / movementFrequency;
+		if (_timeCounter >= movementPeriod) {
+			int multiplesOfPeriod = (int)(_timeCounter / movementPeriod);
+			//				if (multiplesOfPeriod != 1)
+			//				Debug.Log("_timeCounter: " + _timeCounter + ", Time.deltaTime: " + Time.deltaTime + ", multiples: " + multiplesOfPeriod);
+
+			for (int i = 0; i < multiplesOfPeriod; i++) {
+				UpdateMovement();
+				_collisionCheck.CheckCollisions(this);
+				_timeCounter -= movementPeriod;
 			}
 		}
 	}
@@ -161,23 +151,27 @@ public class Snake : MonoBehaviour {
 
 		bool directionChanged = false;
 
-		if (InputManager.initialized && InputManager.instance.HasButtons()) {
+		while (InputManager.initialized && InputManager.instance.HasButtons() && directionChanged == false) {
 			string button = InputManager.instance.GetNextButton();
 
-			if (button == "Down" && (length == 1 || direction != Direction.Up)) {
-				direction = Direction.Down;
-			}
-			if (button == "Up" && (length == 1 || direction != Direction.Down)) {
-				direction = Direction.Up;
-			}
-			if (button == "Left" && (length == 1 || direction != Direction.Right)) {
-				direction = Direction.Left;
-			}
-			if (button == "Right" && (length == 1 || direction != Direction.Left)) {
-				direction = Direction.Right;
-			}
-
 			directionChanged = true;
+
+			if (button == "Down" && direction != Direction.Down && (length == 1 || direction != Direction.Up)) {
+				direction = Direction.Down;
+			} 
+			else if (button == "Up" && direction != Direction.Up && (length == 1 || direction != Direction.Down)) {
+				direction = Direction.Up;
+			} 
+			else if (button == "Left" && direction != Direction.Left && (length == 1 || direction != Direction.Right)) {
+				direction = Direction.Left;
+			} 
+			else if (button == "Right" && direction != Direction.Right && (length == 1 || direction != Direction.Left)) {
+				direction = Direction.Right;
+			} 
+			else {
+				directionChanged = false;
+				Debug.Log("Direction not changed: " + button);
+			}
 		}
 
 		if (directionChanged) {
@@ -231,14 +225,7 @@ public class Snake : MonoBehaviour {
 
 	public void increaseMovementFrequency(float movementFrequencyIncrease) {
 		if (movementFrequencyIncrease > 0) {
-			
 			movementFrequency += movementFrequencyIncrease;
-
-			if (timeKeepingSystem == TimeKeepingSystem.InvokeRepeating) {
-				CancelInvoke();
-				float movementPeriod = 1 / movementFrequency;
-				InvokeRepeating("UpdateMovement", 0, movementPeriod);
-			}
 		}
 	}
 }

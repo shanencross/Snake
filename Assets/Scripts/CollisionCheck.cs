@@ -59,9 +59,11 @@ public class CollisionCheck : MonoBehaviour
 	}
 
 	bool isColliding(Snake snake, GameObject collidingObject) {
-		int layer = collidingObject.layer;
-		string layerName = LayerMask.LayerToName(layer);
-		int layerMask = LayerMask.GetMask(layerName); 
+//		int layer = collidingObject.layer;
+//		string layerName = LayerMask.LayerToName(layer);
+//		int layerMask = LayerMask.GetMask(layerName); 
+
+		int layerMask = 1 << collidingObject.layer;
 
 		bool colliding = false;
 

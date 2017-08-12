@@ -1,19 +1,15 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FoodPellet : MonoBehaviour {
 
-	public int lengthIncrease;
-	public float movementFrequencyIncrease;
+	public int points = 1;
+	public int lengthIncrease = 1;
+	public float movementFrequencyIncrease = 0;
 
 	public GameObject foodSpawnerObject;
 
 	public FoodSpawner foodSpawner;
-
-//	void Awake() {
-//		Initialize();
-//	}
 
 	public void Initialize(GameObject spawner = null, int lengthInc = 1, float moveFreqInc = 1) {
 		lengthIncrease = lengthInc;
@@ -37,6 +33,10 @@ public class FoodPellet : MonoBehaviour {
 	public void CollideWithSnakeHead(Snake snake) {
 		snake.IncreaseLength(lengthIncrease);
 		snake.increaseMovementFrequency(movementFrequencyIncrease);
+
+		if (GameManager.instance) {
+			GameManager.instance.AddToScore(points);
+		}
 
 		DestroyFoodPellet();
 	}

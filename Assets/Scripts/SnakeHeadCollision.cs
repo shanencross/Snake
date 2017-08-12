@@ -1,11 +1,14 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SnakeHeadCollision : MonoBehaviour {
 
 	public void CollideWithSnakeHead(Snake snake) {
 		StopSnake(snake);
+
+		if (GameManager.instance) {
+			GameManager.instance.EndGame();
+		}
 	}
 
 	public void StopSnake(Snake snake) {

@@ -14,16 +14,16 @@ public class InputManager : MonoBehaviour {
 
 	public static bool initialized = false;
 
-	private string[] buttons = {"Up", "Down", "Left", "Right"};
+	private string[] buttons = {"Up", "Down", "Left", "Right", "Submit"};
 	private Queue<string> buttonQueue;
 
 	void Awake() {
 		if (_instance == null) {
 			_instance = this;
-			DontDestroyOnLoad(this.gameObject);
+			DontDestroyOnLoad(gameObject);
 		}
-		else if (_instance != null && _instance != this) {
-			Destroy(this.gameObject);
+		else if (_instance != this) {
+			Destroy(gameObject);
 		}
 
 		buttonQueue = new Queue<string>();
