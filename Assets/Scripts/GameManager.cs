@@ -77,7 +77,11 @@ public class GameManager : MonoBehaviour {
 
 	public void ResetGame() {
 		score = 0;
-		SceneManager.LoadScene(nextSceneAfterGameOver);
+		LoadScene(nextSceneAfterGameOver);
+	}
+
+	public void LoadScene(string sceneName) {
+		SceneManager.LoadScene(sceneName);
 	}
 
 

@@ -43,11 +43,11 @@ public class MenuManager : MonoBehaviour {
 		EventSystem.current.SetSelectedGameObject(defaultButton);
 	}
 
-	public void Test() {
-		Debug.Log("Test");
+	public void Retry() {
+		GameManager.instance.ResetGame();
 	}
 
-	public void Test2() {
-		Debug.Log("Test2");
+	public void ChangeDifficulty() {
+		GameManager.instance.LoadScene("MainMenu");
 	}
 }
