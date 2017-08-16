@@ -36,14 +36,6 @@ public class GameManager : MonoBehaviour {
 		SetUp();
 	}
 
-	void Update() {
-		if (gameIsOver) {
-			if (InputManager.instance.HasButtons() && InputManager.instance.GetNextButton() == "Submit") {
-				ResetGame();
-			}
-		}
-	}
-
 	void SetUp() {
 		if (score < 0)
 			score = 0;
@@ -62,6 +54,7 @@ public class GameManager : MonoBehaviour {
 		if (PlayerPrefs.HasKey("highScore")) {
 			highScore = PlayerPrefs.GetInt("highScore");
 		}
+
 	}
 
 	public void AddToScore(int amount) {
@@ -79,6 +72,7 @@ public class GameManager : MonoBehaviour {
 
 	public void EndGame() {
 		gameIsOver = true;
+		MenuManager.instance.ActivateGameOverUI();
 	}
 
 	public void ResetGame() {
