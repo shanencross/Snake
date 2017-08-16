@@ -27,6 +27,9 @@ public class MenuManager : MonoBehaviour {
 		SetUp();
 	}
 
+	void Update() {
+	}
+
 	void SetUp() {
 		if (gameOverPanel == null)
 			Debug.LogError("Game Over Panel GameObject not set up on Menu Manager.");

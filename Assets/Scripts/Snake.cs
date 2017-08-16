@@ -220,6 +220,8 @@ public class Snake : MonoBehaviour {
 		if (lengthIncrease > 0) {
 			length += lengthIncrease;
 			_bodyPartsToAdd += lengthIncrease;
+
+			GameManager.instance.UpdateLengthText();
 		}
 	}
 
