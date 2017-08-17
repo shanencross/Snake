@@ -1,0 +1,131 @@
+[33mcommit ad20873f893fac5f9d70aef1defd1b020a63e96a[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 16 17:26:10 2017 -0700
+
+    version 1.0? title screen, etc. done
+
+[33mcommit 5ccf1be25145b97dc589c6ff78ee6a4b155e6113[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 16 16:10:52 2017 -0700
+
+    scoring UI system working
+
+[33mcommit 8023990d2ea010b1984b8af509fc094e1dfb6416[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 16 14:54:24 2017 -0700
+
+    Game Over UI working, graphics updated
+
+[33mcommit 81121f5508903efbbe5a1430d5e38a32a305c5c2[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 16 13:12:39 2017 -0700
+
+    updated background and borders, but UI is missing
+
+[33mcommit d8df0a0435b676e37a6ed1bba4ff9a8a4c18c9b6[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 12 00:20:47 2017 -0700
+
+    work on game manager: score, game over and retry, etc.; fixed input queue direction reading bug
+
+[33mcommit 44a28dad906d79e1d8f2ad4d133fc815560ad5bb[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Thu Aug 10 20:28:53 2017 -0700
+
+    revamped collision and spawning multiple food pellets at once works now
+
+[33mcommit a9994b42cde6277f4bb26cd5b83414e32e90fdb9[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 9 20:05:43 2017 -0700
+
+    reworked collision system, in progress
+
+[33mcommit dfed966327930e8dfc105a3a6bac93c7b4bbd17b[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Mon Aug 7 21:27:00 2017 -0700
+
+    snake growth works, experimenting with time-keeping systems
+
+[33mcommit ed5a4741cce9ddda5d4d5f59c4c568a2490514ac[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Mon Aug 7 02:02:42 2017 -0700
+
+    food and food respawning working
+
+[33mcommit b46855e006e8935df65f4e6ecffcb6a045285ada[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sun Aug 6 20:14:22 2017 -0700
+
+    simplified snake collision
+
+[33mcommit 5f43f21785c234617f6eedff5b564ae97c928a8b[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sun Aug 6 01:18:38 2017 -0700
+
+    minor code cleanup
+
+[33mcommit 71691f8c21dc3c85b26c3e25ccd58a3d10993737[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sun Aug 6 01:17:20 2017 -0700
+
+    switched from linecast to boxcast
+
+[33mcommit cf3b3c183d983e426b47e25034909774a189f6a7[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sun Aug 6 01:01:38 2017 -0700
+
+    better collision detection
+
+[33mcommit cbe9cf0d6104dab7fb5bcb8df81a298c42ac59f4[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 5 20:06:18 2017 -0700
+
+    simplified impact detector implementation
+
+[33mcommit b9bad80c6a1ff9aeeeaa10d1b75d6845c04aeaf6[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 5 19:52:51 2017 -0700
+
+    added impact detector in front of head
+
+[33mcommit 88517c00b296ad569bb595015320a13f559c0c95[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 5 03:36:11 2017 -0700
+
+    more cleanup
+
+[33mcommit ff85af9f2011f4715b58bdf350e66d4bbd73de3c[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 5 03:30:17 2017 -0700
+
+    cleaned up code
+
+[33mcommit 72a2ac7f90abcd52fbdeaa7886f751e23243ddba[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Sat Aug 5 02:40:33 2017 -0700
+
+    working good snake movement
+
+[33mcommit 2c21ab860f863430ae9fb8ed16cf1f963223940a[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Fri Aug 4 19:56:29 2017 -0700
+
+    alternate movement, equally good?
+
+[33mcommit 120678d97511c0de67a6230d9076283cbe58980b[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Fri Aug 4 19:48:28 2017 -0700
+
+    better basic snake movement
+
+[33mcommit 81da3a856a2a56eeb4ef277050847dee1171f94b[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 2 02:06:44 2017 -0700
+
+    added README
+
+[33mcommit 96880dc2dd50a91a41431b0b5cbd1ec4774e2cd3[m
+Author: shanencross <shanencross@yahoo.com>
+Date:   Wed Aug 2 02:04:21 2017 -0700
+
+    snake can move kinda

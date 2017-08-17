@@ -17,6 +17,9 @@ public class MainMenuManager : MonoBehaviour {
 	public string sceneToLoad;
 
 	void Awake() {
+		if (_instance == null)
+			_instance = this;
+
 		if (sceneToLoad == null)
 			Debug.LogError("Scene To Load is not set on Game Manager.");
 	}
