@@ -41,6 +41,12 @@ public class GameManager : MonoBehaviour {
 		SetUp();
 	}
 
+	void Start() {
+		UpdateLengthText();
+		UpdateScoreText();
+		UpdateHighScore();
+	}
+
 	void SetUp() {
 		if (score < 0)
 			score = 0;
@@ -66,15 +72,12 @@ public class GameManager : MonoBehaviour {
 			Debug.LogError("Score Text not set up on Game Manager.");
 		if (highScoreText == null)
 			Debug.LogError("High Score Text not set up on Game Manager.");
-
-		UpdateHighScore();
 	}
 
 	public void AddToScore(int amount) {
 		score += amount;
-		if (scoreText)
-			scoreText.text = score.ToString();
 
+		UpdateScoreText();
 		UpdateHighScore();
 	}
 
@@ -84,13 +87,22 @@ public class GameManager : MonoBehaviour {
 			PlayerPrefs.SetInt("highScore", highScore);
 		}
 
-		if (highScoreText)
-			highScoreText.text = highScore.ToString();
+		UpdateHighScoreText();
 	}
-
+		
 	public void UpdateLengthText() {
 		if (lengthText)
 			lengthText.text = _snake.length.ToString();
+	}
+
+	void UpdateScoreText() {
+		if (scoreText)
+			scoreText.text = score.ToString();
+	}
+
+	void UpdateHighScoreText() {
+		if (highScoreText)
+			highScoreText.text = highScore.ToString();
 	}
 
 	public void EndGame() {

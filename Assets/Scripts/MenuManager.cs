@@ -15,6 +15,7 @@ public class MenuManager : MonoBehaviour {
 
 	public GameObject gameOverPanel;
 	public GameObject defaultButton;
+	public string mainMenuScene = "Main Menu";
 
 
 	public void Awake() {
@@ -25,9 +26,6 @@ public class MenuManager : MonoBehaviour {
 		}
 
 		SetUp();
-	}
-
-	void Update() {
 	}
 
 	void SetUp() {
@@ -50,7 +48,7 @@ public class MenuManager : MonoBehaviour {
 		GameManager.instance.ResetGame();
 	}
 
-	public void ChangeDifficulty() {
-		GameManager.instance.LoadScene("MainMenu");
+	public void ReturnToMenu() {
+		GameManager.instance.LoadScene(mainMenuScene);
 	}
 }
