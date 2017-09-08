@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour {
 
-	private MainMenuManager _instance;
-	public MainMenuManager instance {
+	private static MainMenuManager _instance;
+	public static MainMenuManager instance {
 		get {
 			if (!_instance)
 				Debug.LogError("No Main Menu Manager in scene.");
@@ -17,9 +17,14 @@ public class MainMenuManager : MonoBehaviour {
 	public string sceneToLoad;
 
 	void Awake() {
-		if (_instance == null)
+		if (_instance == null) {
 			_instance = this;
-
+		}
+		else if (_instance != this) {
+			Destroy(gameObject);
+			return;
+		}
+			
 		if (sceneToLoad == null)
 			Debug.LogError("Scene To Load is not set on Game Manager.");
 	}
@@ -27,6 +32,7 @@ public class MainMenuManager : MonoBehaviour {
 	void Update() {
 
 		if (Input.GetButtonDown("Submit")) {
+			SoundManager.instance.PlaySound("menuSubmit");
 			SceneManager.LoadScene(sceneToLoad);
 		}
 	}

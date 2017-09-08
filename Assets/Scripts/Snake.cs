@@ -25,12 +25,16 @@ public class Snake : MonoBehaviour {
 	[HideInInspector]
 	public Vector2 distanceVector;
 
+	public bool playMovementSound = false;
+	public bool playDirectionChangeSound = true;
+
 	float _timeCounter = 0;
 
 	// extra body parts that need to be added due to snake length increase
 	int _bodyPartsToAdd = 0;
 
 	CollisionCheck _collisionCheck;
+	[HideInInspector]
 
 	void Awake() {
 		if (length < 1)
@@ -111,6 +115,8 @@ public class Snake : MonoBehaviour {
 	void UpdateMovement() {
 		UpdateDirection();
 		Move();
+		if (playMovementSound)
+			SoundManager.instance.PlaySound("movement");
 	}
 
 	void Move() {			
@@ -176,6 +182,8 @@ public class Snake : MonoBehaviour {
 
 		if (directionChanged) {
 			UpdateDirectionAndDistanceVectors();
+			if (playDirectionChangeSound)
+				SoundManager.instance.PlaySound("directionChange");
 		}
 
 		return directionChanged;

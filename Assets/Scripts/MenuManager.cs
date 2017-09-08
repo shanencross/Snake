@@ -17,12 +17,17 @@ public class MenuManager : MonoBehaviour {
 	public GameObject defaultButton;
 	public string mainMenuScene = "Main Menu";
 
+	[HideInInspector]
+	public bool firstSelectionDone = false;
+
 
 	public void Awake() {
 		if (_instance == null) {
 			_instance = this;
-		} else if (_instance != this) {
+		}
+		else if (_instance != this) {
 			Destroy(gameObject);
+			return;
 		}
 
 		SetUp();
@@ -42,6 +47,7 @@ public class MenuManager : MonoBehaviour {
 		if (gameOverPanel != null)
 			gameOverPanel.SetActive(true);
 		EventSystem.current.SetSelectedGameObject(defaultButton);
+		firstSelectionDone = true;
 	}
 
 	public void Retry() {

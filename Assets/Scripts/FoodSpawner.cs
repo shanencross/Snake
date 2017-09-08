@@ -88,6 +88,7 @@ public class FoodSpawner : MonoBehaviour
 	}
 
 	float SnapToGrid(float num) {
+		// Round to a multiple of 1 with a 0.5 offset: ..., -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, ...
 		return Mathf.Sign(num) * (Mathf.Abs((int)(num)) + 0.5f);
 	}
 

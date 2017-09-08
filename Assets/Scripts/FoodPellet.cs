@@ -33,6 +33,7 @@ public class FoodPellet : MonoBehaviour {
 	public void CollideWithSnakeHead(Snake snake) {
 		snake.IncreaseLength(lengthIncrease);
 		snake.increaseMovementFrequency(movementFrequencyIncrease);
+		SoundManager.instance.PlaySound("eating");
 
 		if (GameManager.instance) {
 			GameManager.instance.AddToScore(points);

@@ -23,6 +23,7 @@ public class InputManager : MonoBehaviour {
 		}
 		else if (_instance != this) {
 			Destroy(gameObject);
+			return;
 		}
 
 		buttonQueue = new Queue<string>();

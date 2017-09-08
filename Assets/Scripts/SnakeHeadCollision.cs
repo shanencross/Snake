@@ -5,6 +5,7 @@ public class SnakeHeadCollision : MonoBehaviour {
 
 	public void CollideWithSnakeHead(Snake snake) {
 		StopSnake(snake);
+		SoundManager.instance.PlaySound("collision");
 
 		if (GameManager.instance) {
 			GameManager.instance.EndGame();
